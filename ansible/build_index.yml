@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  vars:
+
+    branch: dev
+    pwa_version: 0.2.2
+    ansible_versions_file: ansible_versions.yml
+    distribution_versions_file: distribution_versions.yml
+    github_pwa_docker_url: https://raw.githubusercontent.com/playwithansible/docker
+    github_pwa_ansible_versions_url: "{{ github_pwa_docker_url }}/{{ branch }}/{{ ansible_versions_file }}"
+    github_pwa_distribution_versions_url: "{{ github_pwa_docker_url }}/{{ branch }}/{{ distribution_versions_file }}"
+  
+  tasks:
+
+    - name: Get '{{ ansible_versions_file }}' from '{{ github_pwa_ansible_versions_url }}'
+      get_url:
+        url: "{{ github_pwa_ansible_versions_url }}"
+        dest: "/tmp/{{ ansible_versions_file }}"
+
+    - name: Get '{{ distribution_versions_file }}' from '{{ github_pwa_distribution_versions_url }}'
+      get_url:
+        url: "{{ github_pwa_distribution_versions_url }}"
+        dest: "/tmp/{{ distribution_versions_file }}"
+
+    - name: Include vars from '{{ ansible_versions_file }}'
+      include_vars: "/tmp/{{ ansible_versions_file }}"
+
+    - name: Include vars from '{{ distribution_versions_file }}'
+      include_vars: "/tmp/{{ distribution_versions_file }}"
+
+    - name: Generate 'index.md' from 'index.md.j2' template
+      template:
+        src: index.md.j2
+        dest: ../index.md

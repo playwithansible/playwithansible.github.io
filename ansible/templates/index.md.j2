@@ -1,0 +1,23 @@
+{%- set github_packages_url = 'https://github.com/orgs/playwithansible/packages/container/package/' -%}
+
+**Latest playwithansible version: {{ pwa_version }}**
+
+## Supported Ansible versions
+
+| **Version**               | **Docker Image**      |
+| :-----------------------: | :-------------------- |
+{% for version in ansible_versions %}
+{%- set img = 'ghcr.io/playwithansible/ansible-' + version -%}
+{%- set img_link = github_packages_url + '/ansible-' + version -%}
+| **Ansible {{ version }}** | [{{ img }}]({{ img_link }}):{{ pwa_version }} |
+{% endfor %}
+
+## Supported Target Linux distributions
+
+| **Name**         | **Distribution**     | **Full Name**            | **Docker Image** |
+| :--------------- | :------------------: | :----------------------- | :--------------- |
+{% for d in distribution_versions %}
+{%- set img = 'ghcr.io/playwithansible/' + d.name -%}
+{%- set img_link = github_packages_url + '/' + d.name -%}
+| **{{ d.name }}** | {{ d.distribution }} | **{{ d.display_name }}** | [{{ img }}]({{ img_link }}):{{ pwa_version }} |
+{% endfor %}
